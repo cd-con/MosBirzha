@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using MosBirzha_23var.Objects;
 
 namespace MosBirzha_23var.Companies
 {
@@ -18,15 +19,34 @@ namespace MosBirzha_23var.Companies
     }
     public abstract class DefaultCompany
     {
-        protected LastTickResult tResult;
-        public List<PriceScalp> graph = new();
+        protected LastTickResult _tResult;
+        public List<PriceScalp> Scalps = [];
         public double Price
         {
             get
             {
-                return Math.Round(graph.Last().Price, 2);
+                if (Scalps.Count > 0)
+                    return Math.Round(Scalps.Last().Price, 2);
+                return 0;
             }
         }
+        public double PriceDynamic
+        {
+            get
+            {
+                if (Scalps.Count > 0)
+                    return (Scalps.Last().Price - Scalps[0].Price) / Scalps[0].Price ;
+                return 0;
+            }
+        }
+
+        // по факту это нужно для того, чтобы загрузка работала
+        public LastTickResult SpeculateTick(long currentTime, LastTickResult result)
+        {
+            _tResult = result;
+            return Tick(currentTime);
+        }
+
         public LastTickResult Tick(long currentTime)
         {
             LastTickResult result = new()
@@ -35,28 +55,32 @@ namespace MosBirzha_23var.Companies
                 Timestamp = currentTime
             };
             result.IsMoveHappend = result.Magic > 0.2f;
+
             // Check if someone decided to buy/sell
             if (result.IsMoveHappend)
             {
                 // Deciding - buy or sell
-                result.IsBuying = (result.Magic + 0.2f) > 0.7f + (tResult.IsBuying ? 0.3f : 0);
+                result.IsBuying = (result.Magic + 0.2f) > 0.7f + (_tResult.IsBuying ? 0.2475f : 0);
                 double PriceDeviation = Common.Rng.NextSingle();
-                result.SetPrice(tResult.Scalp.Price - PriceDeviation * (result.IsBuying ? -1 : 1));
+                result.SetPrice(_tResult.Scalp.Price - PriceDeviation * (result.IsBuying ? -1 : 1));
             }
             else
             {
-                result.SetPrice(tResult.Scalp.Price);
+                result.SetPrice(_tResult.Scalp.Price);
             }
-            tResult = result;
-            graph.Add(result.Scalp);
+            _tResult = result;
+            Scalps.Add(result.Scalp);
             return result;
         }
     }
 
-    public class Test : DefaultCompany
+    public class TestCompany : DefaultCompany
     {
-        public Test()
+        public TestCompany() => Reset();
+
+        public void Reset()
         {
+            Scalps.Clear();
             LastTickResult result = new()
             {
                 Magic = -1,
@@ -65,7 +89,7 @@ namespace MosBirzha_23var.Companies
                 IsBuying = false,
             };
             result.SetPrice(100);
-            tResult = result;
+            _tResult = result;
         }
     }
 }

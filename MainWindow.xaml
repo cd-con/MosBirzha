@@ -5,41 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MosBirzha_23var"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Московская Биржа" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="204*"/>
         </Grid.RowDefinitions>
-        <local:Chart x:Name="Chart" Grid.Row="1"/>
-        <Grid>
+        <local:Chart Background="LightGray" x:Name="Chart" Grid.Row="1"/>
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="25*"/>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="137*"/>
-                <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
             <!-- Logo -->
-            <Image Source="/Resources/moex.jpg" Stretch="Fill"/>
+            <Image Source="/Resources/moex.jpg" Stretch="Fill" Grid.RowSpan="2" Margin="10,5,10,5">
+                <Image.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Админка Набиулинной" IsEnabled="False"/>
+                        <Separator/>
+                        <MenuItem Header="Сохранить данные" Click="StoreData_Click"/>
+                        <MenuItem Header="Загрузить данные" Click="LoadData_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Сгенерировать данные за 2 недели" Click="GenerateData_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Сброс" Click="Clear_Click"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
 
             <!-- Company selector -->
-            <ComboBox Grid.Column="1" Margin="5,5,5,5"></ComboBox>
+            <ComboBox Grid.Column="1" Margin="5,5,2,5" SelectedIndex="0">
+                <ComboBox.Items>
+                    <ComboBoxItem Content="ПАО 'ДЕТДОМ'"/>
+                </ComboBox.Items>
+            </ComboBox>
 
             <!-- Last price -->
-            <TextBlock x:Name="PriceDisplay" Grid.Column="2" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap" Text="0.00000 $" VerticalAlignment="Top"/>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="4,19,0,0" TextWrapping="Wrap" Text="последняя цена" FontSize="6" VerticalAlignment="Top" Width="48"/>
+            <TextBlock x:Name="PriceDisplay" Grid.Column="3" TextWrapping="Wrap" Text="0.00 $" FontSize="24" Grid.ColumnSpan="1"/>
+            <TextBlock Grid.Column="3" HorizontalAlignment="Left" TextWrapping="Wrap" Text="последняя цена" FontSize="10" VerticalAlignment="Top" Width="90" Height="13" Margin="0,29,0,0" Grid.RowSpan="2"/>
 
             <!-- Dynamic 24h -->
-            <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="0.00%" VerticalAlignment="Top"/>
-            <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="10,19,0,0" TextWrapping="Wrap" Text="динамика 24ч" FontSize="6" VerticalAlignment="Top" Width="48"/>
+            <TextBlock x:Name="DynamicDisplay" Grid.Column="4" TextWrapping="Wrap" Text="0.00%" FontSize="24"/>
+            <TextBlock x:Name="DynamicDescription" Grid.Column="4" TextWrapping="Wrap" Text="динамика 24ч" FontSize="10" VerticalAlignment="Top" Margin="0,29,0,0" Grid.RowSpan="2" Height="13"/>
 
             <!-- Grid display settings -->
-            <ComboBox Grid.Column="5" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0" Margin="5,5,5,5" VerticalAlignment="Center" Height="20">
+            <ComboBox Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0" Margin="5,0,2,0" VerticalAlignment="Center" Height="20" Grid.Row="1">
                 <ComboBox.Items>
-                    <ComboBoxItem Content="DEBUG"/>
                     <ComboBoxItem Content="1min"/>
                     <ComboBoxItem Content="5min"/>
                     <ComboBoxItem Content="15min"/>

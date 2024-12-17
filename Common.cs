@@ -1,69 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MosBirzha_23var.Objects;
 
 namespace MosBirzha_23var
 {
-    class Common
+    public static class Common
     {
-        public static Random Rng = new();
+        public static Random Rng { get; } = new();
 
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            // Unix timestamp is seconds past epoch
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTime;
-        }
+        private static Dictionary<CandleTimeSpan, string> _locale { get; } =
+            new(){ { CandleTimeSpan.MINUTE, "минуту"},
+                   { CandleTimeSpan.FIVE_MINUTE, "5 минут" }, 
+                   { CandleTimeSpan.FIFTEEN_MINUTES, "15 минут" }, 
+                   { CandleTimeSpan.THIRTY_MINUTES, "полчаса" }, 
+                   { CandleTimeSpan.HOUR, "час" }, 
+                   { CandleTimeSpan.SIX_HOURS, "6 часов" }, 
+                   { CandleTimeSpan.DAY, "день" } };
 
-        public static List<Candle> ConvertToCandles(List<PriceScalp> priceScalps, CandleTimeSpan timeSpan)
+        public static string SpanToString(this CandleTimeSpan span) => _locale[span];
+
+        public static List<Candle> ToCandles(this List<PriceScalp> priceScalps, CandleTimeSpan timeSpan)
         {
             if (priceScalps == null || priceScalps.Count == 0)
-            {
                 return [];
-            }
 
-            // Группируем данные по временным промежуткам
-            var candles = new List<Candle>();
+            IEnumerable<PriceScalp> sortedPriceScalps = priceScalps.OrderBy(ps => ps.Timestamp);
+            List<Candle> result = [];
 
-            // Сортируем данные для корректной группировки
-            var sortedPriceScalps = priceScalps.OrderBy(ps => ps.Timestamp).ToList();
-
-            long currentGroupEndTime = sortedPriceScalps.First().Timestamp + (long)timeSpan;
-
+            long currentCandleStartTime = sortedPriceScalps.First().Timestamp;
+            long candleDuration = (long)timeSpan;
             List<PriceScalp> currentGroup = [];
 
-            foreach (var scalp in sortedPriceScalps)
+
+            foreach (PriceScalp scalp in sortedPriceScalps)
             {
-                if (scalp.Timestamp < currentGroupEndTime)
+                if (scalp.Timestamp < currentCandleStartTime + candleDuration)
                 {
                     currentGroup.Add(scalp);
                 }
                 else
                 {
                     if (currentGroup.Count > 0)
+                        result.Add(currentGroup.ToCandle());
+
+                    currentCandleStartTime += candleDuration;
+                    currentGroup = [scalp];
+
+                    while (scalp.Timestamp >= currentCandleStartTime + candleDuration)
                     {
-                        candles.Add(CreateCandle(currentGroup));
+                        result.Add(new Candle(0, 0, 0, 0));
+                        currentCandleStartTime += candleDuration;
                     }
-                    // Обновляем временные рамки для следующей группы
-                    currentGroupEndTime = scalp.Timestamp + (long)timeSpan;
-                    currentGroup.Clear();
-                    currentGroup.Add(scalp);
                 }
             }
 
-            // Добавляем последнюю группу, если она не пустая
             if (currentGroup.Count > 0)
-            {
-                candles.Add(CreateCandle(currentGroup));
-            }
+                result.Add(currentGroup.ToCandle());
 
-            return candles;
+            return result;
         }
 
-        private static Candle CreateCandle(List<PriceScalp> priceScalps)
+        public static Candle ToCandle(this List<PriceScalp> priceScalps)
         {
             double open = priceScalps.First().Price;  // Цена открытия
             double close = priceScalps.Last().Price;  // Цена закрытия
