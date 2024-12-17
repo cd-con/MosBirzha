@@ -1,0 +1,54 @@
+﻿<Window x:Class="MosBirzha_23var.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MosBirzha_23var"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="204*"/>
+        </Grid.RowDefinitions>
+        <local:Chart x:Name="Chart" Grid.Row="1"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="137*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Logo -->
+            <Image Source="/Resources/moex.jpg" Stretch="Fill"/>
+
+            <!-- Company selector -->
+            <ComboBox Grid.Column="1" Margin="5,5,5,5"></ComboBox>
+
+            <!-- Last price -->
+            <TextBlock x:Name="PriceDisplay" Grid.Column="2" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap" Text="0.00000 $" VerticalAlignment="Top"/>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="4,19,0,0" TextWrapping="Wrap" Text="последняя цена" FontSize="6" VerticalAlignment="Top" Width="48"/>
+
+            <!-- Dynamic 24h -->
+            <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="0.00%" VerticalAlignment="Top"/>
+            <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="10,19,0,0" TextWrapping="Wrap" Text="динамика 24ч" FontSize="6" VerticalAlignment="Top" Width="48"/>
+
+            <!-- Grid display settings -->
+            <ComboBox Grid.Column="5" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0" Margin="5,5,5,5" VerticalAlignment="Center" Height="20">
+                <ComboBox.Items>
+                    <ComboBoxItem Content="DEBUG"/>
+                    <ComboBoxItem Content="1min"/>
+                    <ComboBoxItem Content="5min"/>
+                    <ComboBoxItem Content="15min"/>
+                    <ComboBoxItem Content="30min"/>
+                    <ComboBoxItem Content="1h"/>
+                    <ComboBoxItem Content="6h"/>
+                    <ComboBoxItem Content="1day"/>
+                </ComboBox.Items>
+            </ComboBox>
+        </Grid>
+    </Grid>
+</Window>
