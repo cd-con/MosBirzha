@@ -17,10 +17,13 @@ namespace MosBirzha_23var.Companies
         }
 
     }
-    public abstract class DefaultCompany
+    public class DefaultCompany
     {
-        protected LastTickResult _tResult;
         public List<PriceScalp> Scalps = [];
+        protected LastTickResult _tResult;
+
+        public DefaultCompany() => Reset();
+
         public double Price
         {
             get
@@ -72,11 +75,6 @@ namespace MosBirzha_23var.Companies
             Scalps.Add(result.Scalp);
             return result;
         }
-    }
-
-    public class TestCompany : DefaultCompany
-    {
-        public TestCompany() => Reset();
 
         public void Reset()
         {

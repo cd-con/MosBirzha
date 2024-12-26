@@ -6,6 +6,7 @@ namespace MosBirzha_23var
     {
         public static Random Rng { get; } = new();
 
+        /*[Obsolete("Более не используется")]
         private static Dictionary<CandleTimeSpan, string> _locale { get; } =
             new(){ { CandleTimeSpan.MINUTE, "минуту"},
                    { CandleTimeSpan.FIVE_MINUTE, "5 минут" }, 
@@ -15,8 +16,9 @@ namespace MosBirzha_23var
                    { CandleTimeSpan.SIX_HOURS, "6 часов" }, 
                    { CandleTimeSpan.DAY, "день" } };
 
+        [Obsolete("Более не используется")]
         public static string SpanToString(this CandleTimeSpan span) => _locale[span];
-
+        */
         public static List<Candle> ToCandles(this List<PriceScalp> priceScalps, CandleTimeSpan timeSpan)
         {
             if (priceScalps == null || priceScalps.Count == 0)

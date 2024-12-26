@@ -17,7 +17,7 @@ namespace MosBirzha_23var
     public partial class MainWindow : Window
     {
         public CandleTimeSpan CurrentDisplaySpan { get; private set; } = CandleTimeSpan.MINUTE;
-        private TestCompany Company { get; } = new();
+        private DefaultCompany Company { get; } = new();
         private DispatcherTimer _companyUpdateTimer = new();
 
         public MainWindow()
@@ -31,7 +31,7 @@ namespace MosBirzha_23var
             _companyUpdateTimer.Start();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void UpdateDisplaySpan(object sender, SelectionChangedEventArgs e)
         {
             CurrentDisplaySpan = (CandleTimeSpan)(Enum.GetValues(typeof(CandleTimeSpan))).GetValue((sender as ComboBox).SelectedIndex);
             Update();
@@ -39,19 +39,18 @@ namespace MosBirzha_23var
 
         private void Update()
         {
-
             Chart.DisplaySpan = CurrentDisplaySpan;
             Chart.Candles = Company.Scalps.ToCandles(CurrentDisplaySpan);
             Chart.Draw();
-
-
-
 
             PriceDisplay.Text = $"{Company.Price}$";
             if (Chart.Candles.Count > 0)
             {
                 DynamicDisplay.Text = $"{Company.PriceDynamic * 100:F2}%";
                 DynamicDescription.Text = $"Динамика";
+            }else
+            {
+                return;
             }
 
             if (Company.PriceDynamic > 0)
@@ -67,6 +66,8 @@ namespace MosBirzha_23var
                 DynamicDisplay.Foreground = Brushes.Black;
             }
         }
+
+        // Удалить перед сдачей
 
         private void StoreData_Click(object sender, RoutedEventArgs e)
         {

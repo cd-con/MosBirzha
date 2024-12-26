@@ -57,7 +57,7 @@
             <TextBlock x:Name="DynamicDescription" Grid.Column="4" TextWrapping="Wrap" Text="динамика 24ч" FontSize="10" VerticalAlignment="Top" Margin="0,29,0,0" Grid.RowSpan="2" Height="13"/>
 
             <!-- Grid display settings -->
-            <ComboBox Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0" Margin="5,0,2,0" VerticalAlignment="Center" Height="20" Grid.Row="1">
+            <ComboBox Grid.Column="1" SelectionChanged="UpdateDisplaySpan" SelectedIndex="0" Margin="5,0,2,0" VerticalAlignment="Center" Height="20" Grid.Row="1">
                 <ComboBox.Items>
                     <ComboBoxItem Content="1min"/>
                     <ComboBoxItem Content="5min"/>

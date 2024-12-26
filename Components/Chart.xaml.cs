@@ -68,7 +68,8 @@ namespace MosBirzha_23var
                 {
                     Width = _candleWidth,
                     Height = Math.Abs(openY - closeY),
-                    Fill = candle.Close >= candle.Open ? Brushes.Green : Brushes.Red
+                    Fill = candle.Close >= candle.Open ? Brushes.Green : Brushes.Red,
+                    ToolTip = $"Open: {candle.Open:F4}\nClose: {candle.Close:F4}\nHigh: {candle.High:F4}\nLow: {candle.Low:F4}"
                 };
                 Canvas.SetLeft(rectangle, x);
                 Canvas.SetTop(rectangle, Math.Min(openY, closeY));
@@ -127,23 +128,7 @@ namespace MosBirzha_23var
             TimeBar.Maximum = Math.Max(0, Candles.Count * (_candleWidth + _spacing) - CandleCanvas.ActualWidth); // Ограничиваем прокрутку
             DrawCandles(TimeBar.Value);
         }
-        // Отображаем Tooltip при наведении
-        private void CandleCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            double mouseX = e.GetPosition(CandleCanvas).X;
-
-            for (int i = 0; i < Candles.Count; i++)
-            {
-                double x = CandleCanvas.ActualWidth - (Candles.Count - i) * (_candleWidth + _spacing) - TimeBar.Value;
-                if (mouseX >= x && mouseX <= x + _candleWidth)
-                {
-                    Candle candle = Candles[i];
-                    CandleCanvas.ToolTip = $"Open: {candle.Open:F4}\nClose: {candle.Close:F4}\nHigh: {candle.High:F4}\nLow: {candle.Low:F4}";
-                    break;
-                }
-            }
-        }
-
+        
         // Метод для инициализации
         public void Draw()
         {
